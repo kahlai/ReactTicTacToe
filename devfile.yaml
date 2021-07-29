@@ -1,0 +1,47 @@
+apiVersion: 1.0.0
+metadata:
+  name: nodejs-reactjs-
+projects:
+  - name: react-js-tic-tac-toe
+    source:
+      location: 'https://github.com/kahlai/ReactTicTacToe.git'
+      type: git
+components:
+  - id: che-incubator/typescript/latest
+    type: chePlugin
+    registryUrl: 'https://eclipse-che.github.io/che-plugin-registry/7.32.2/v3/'
+  - mountSources: true
+    endpoints:
+      - name: devmode
+        port: 3000
+      - name: react
+        port: 5000
+    memoryLimit: 2Gi
+    type: dockerimage
+    image: 'quay.io/eclipse/che-nodejs10-community:7.32.2'
+    alias: nodejs
+commands:
+  - name: npm install
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/ReactTicTacToe'
+        type: exec
+        command: npm install
+        component: nodejs
+  - name: build
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/ReactTicTacToe'
+        type: exec
+        command: npm run build
+        component: nodejs
+  - name: start
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/ReactTicTacToe'
+        type: exec
+        command: npm run start --host 0.0.0.0 --disableHostCheck true
+        component: nodejs
+  - name: lint
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/ReactTicTacToe'
+        type: exec
+        command: yarn run lint
+        component: nodejs
